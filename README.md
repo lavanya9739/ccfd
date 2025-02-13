@@ -57,11 +57,11 @@ The dataset contains the following fields:
 ## 🖥️ How to Run Locally
 1. Clone the repository:
    ```bash
-   git clone https://github.com/lavanya9739/Credit-card-fraud-detection-using-lgbm.git
+   git clone https://github.com/lavanya9739/ccfd.git
    ```
 2. Navigate to the project folder:
    ```bash
-   cd Credit-card-fraud-detection-using-lgbm
+   cd ccfd
    ```
 3. Install dependencies:
    ```bash
