@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="login-page">
+    <div class="wrapper">
+        <!-- Navbar -->
+        <header class="navbar-login">
+            <div class="navbar-container">
+                <a href="{{ url_for('index') }}" class="logo">Fraud Detection</a>
+                <!-- Login/Logout Buttons -->
+                <div class="auth-buttons">
+                    {% if session.get('user') %}
+                        <a href="{{ url_for('logout') }}" class="btn white">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="btn">Login</a>
+                        <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+
+        <!-- Login Section -->
+        <div class="login-wrapper">
+            <div class="login-box">
+                <h1>Login</h1>
+                <form action="{{ url_for('login') }}" method="POST">
+                    <div class="input-group">
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username" required>
+                    </div>
+                    <div class="input-group">
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password" required>
+                    </div>
+                    <button type="submit" class="btn">Login</button>
+                </form>
+                <p>Don't have an account? <a href="{{ url_for('signup') }}">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

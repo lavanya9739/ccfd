@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Fraud Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+</head>
+<body class="home-page">
+{% extends 'base.html' %}
+
+{% block title %}Home - Fraud Detection{% endblock %}
+
+{% block content %}
+
+    <main>
+        <!-- Welcome Section -->
+        <section id="introduction" class="welcome-section">
+            <div class="welcome-content">
+                <h1>Welcome to the Future of Secure Transactions</h1>
+                <p>
+                    At our <strong>Credit Card Fraud Detection Platform</strong>, we leverage the power of 
+                    <strong>Machine Learning (ML)</strong> to detect fraud and 
+                    protect your financial transactions.
+                </p>
+                <a href="{{ url_for('predict') }}" class="cta-button">Try Fraud Detection Now</a>
+            </div>
+        </section>
+
+        <!-- Problem Statement Section -->
+        <section id="problem" class="problem-section">
+            <h2>The Growing Threat of Credit Card Fraud</h2>
+            <p>
+                Credit card fraud is a major issue that affects millions of people worldwide. Fraudulent transactions can happen
+                at any moment, whether online or in-store, and are often difficult to detect. Traditional methods of fraud detection
+                rely on human intervention or outdated algorithms that fail to catch sophisticated fraud patterns. 
+                Our platform harnesses cutting-edge technologies like ML to automatically detect fraud in real-time, ensuring that 
+                your transactions are safe and secure.
+            </p>
+        </section>
+
+        <!-- How ML and DL Work Section -->
+        <section id="how-it-works" class="how-it-works-section">   
+            <h2>How Machine Learning Help</h2>
+            <p><h3>
+                Machine learning are revolutionizing fraud detection by automatically identifying patterns
+                and anomalies in transaction data. Our platform uses these technologies to analyze vast amounts of transaction data
+                in real-time, learning from historical data to detect and prevent fraud effectively.
+            </p></h3>
+            <div class="technologies">
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='ml.jpeg') }}" alt="Machine Learning Illustration">
+                    <h3>Machine Learning</h3>
+                    <p>
+                        ML algorithms analyze past transaction data to build models that predict the likelihood of fraudulent activities.
+                        It identifies patterns in historical transactions, recognizing anomalies that indicate possible fraud. 
+                        Additionally, ML adapts to new fraud techniques by learning from fresh data, ensuring it evolves with changing fraud tactics.
+                    </p>
+                    
+                </div>
+                <div class="tech-item">
+                    <img src="{{ url_for('static', filename='el.webp') }}" alt="Deep Learning Illustration">
+                    <h3>Ensemble Learning</h3>
+                    <p >
+                        Ensemble Learning improves prediction accuracy by combining multiple models. It works by aggregating the predictions of various base models, such as decision trees, and leveraging their collective strength to make more accurate predictions.
+                        This approach increases robustness and reduces overfitting, making fraud detection more reliable, even with complex data patterns.
+                    </p>
+                   
+                </div>
+            </div>
+            
+            </div>
+        
+        
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <h2>Key Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <img src="{{ url_for('static', filename='cefd.png') }}" alt="Cutting-Edge Fraud Detection">
+                    <h3>Cutting-Edge Fraud Detection</h3>
+                    <p>Our platform uses ML and DL to identify and prevent fraudulent transactions in real-time.</p>
+                </div>
+                <div class="feature">
+                    <img src="{{ url_for('static', filename='rl.png') }}" alt="Real-Time Predictions">
+                    <h3>Real-Time Predictions</h3>
+                    <p>Get instant fraud predictions, reducing risks and improving the security of every transaction.</p>
+                </div>
+                <div class="feature">
+                    <img src="{{ url_for('static', filename='eu.png') }}" alt="User-Friendly Interface">
+                    <h3>Easy to Use</h3>
+                    <p>Designed for all users, our platform makes fraud detection simple, intuitive, and accessible.</p>
+                </div>
+                <div class="feature">
+                    <img src="{{ url_for('static', filename='ai (2).webp') }}" alt="AI at Work">
+                    <h3>AI-Powered Security</h3>
+                    <p>AI continuously improves the detection models, ensuring up-to-date protection against evolving fraud techniques.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    {%endblock%}
+    <script>
+        
+        document.addEventListener("DOMContentLoaded", () => {
+            const toggleButtons = document.querySelectorAll(".toggle-button");
+    
+            toggleButtons.forEach(button => {
+                button.addEventListener("click", (e) => {
+                    const techItem = e.target.closest(".tech-item");
+                    const fullText = techItem.querySelector(".full-text");
+                    const shortText = techItem.querySelector(".short-text");
+    
+                    if (fullText.style.display === "none" || !fullText.style.display) {
+                        fullText.style.display = "block";
+                        shortText.style.display = "none";
+                        button.textContent = "Read Less";
+                    } else {
+                        fullText.style.display = "none";
+                        shortText.style.display = "block";
+                        button.textContent = "Read More";
+                    }
+                });
+            });
+        });
+    </script>
+    
+</body>
+</html>
