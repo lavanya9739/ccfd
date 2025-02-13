@@ -1,6 +1,6 @@
  **Credit Card Fraud Detection using LightGBM** project:  
 
-```markdown
+
 # Credit Card Fraud Detection using LightGBM
 
 ## 📌 Project Overview
@@ -46,12 +46,12 @@ The dataset contains the following fields:
 ## 🏗️ Project Structure
 ```
 📂 Credit-card-fraud-detection-using-lgbm
- ┣ 📂 static/        # CSS, JS files
- ┣ 📂 templates/     # HTML pages
- ┣ 📜 app.py        # Flask application
- ┣ 📜 model.py      # Fraud detection model
- ┣ 📜 requirements.txt # Python dependencies
- ┣ 📜 README.md      # Project documentation
+- ┣ 📂 static/        # CSS, JS files
+- ┣ 📂 templates/     # HTML pages
+- ┣ 📜 app.py        # Flask application
+- ┣ 📜 model.py      # Fraud detection model
+- ┣ 📜 requirements.txt # Python dependencies
+- ┣ 📜 README.md      # Project documentation
 ```
 
 ## 🖥️ How to Run Locally
