@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fraud Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body class="prediction-page">
+{% extends 'base.html' %}
+
+{% block title %}Prediction - Fraud Detection{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>Fraud Prediction</h1>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for category, message in messages %}
+                        <li class="flash-message {{ category }}">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+
+        {% if result %}
+            <div class="prediction-result">
+                <h2>Prediction Result: <span class="{{ 'fraud' if result == 'Fraud' else 'not-fraud' }}">{{ result }}</span></h2>
+                <p><strong>Fraud Probability:</strong> {{ probability }}%</p>
+            </div>
+        {% else %}
+            <p>Awaiting prediction result...</p>
+        {% endif %}
+
+        <form action="{{ url_for('predict') }}" method="POST">
+            <label for="transaction_type">Transaction Type:</label>
+            <input type="text" id="transaction_type" name="transaction_type" required><br><br>
+
+            <label for="currency_code">Currency Code:</label>
+            <input type="text" id="currency_code" name="currency_code" required><br><br>
+
+            <label for="transaction_country">Transaction Country:</label>
+            <input type="text" id="transaction_country" name="transaction_country" required><br><br>
+
+            <label for="transaction_city">Transaction City:</label>
+            <input type="text" id="transaction_city" name="transaction_city" required><br><br>
+
+            <label for="transaction_amount">Transaction Amount:</label>
+            <input type="number" id="transaction_amount" name="transaction_amount" step="0.01" required><br><br>
+
+            <label for="credit_limit">Credit Limit:</label>
+            <input type="number" id="credit_limit" name="credit_limit" required><br><br>
+
+            <label for="merchant_category_code">Merchant Category Code:</label>
+            <input type="number" id="merchant_category_code" name="merchant_category_code" required><br><br>
+
+            <label for="open_to_buy">Open to Buy:</label>
+            <input type="number" id="open_to_buy" name="open_to_buy" required><br><br>
+
+            <input type="submit" value="Predict">
+        </form>
+    </div>
+    {%endblock%}
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('nav-links');
+        
+            if (navLinks.style.maxHeight && navLinks.style.maxHeight !== "0px") {
+                navLinks.style.maxHeight = "0px"; // Slide up
+            } else {
+                navLinks.style.maxHeight = navLinks.scrollHeight + "px"; // Slide down
+            }
+        }
+    </script>
+</body>
+</html>
