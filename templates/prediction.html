@@ -1,78 +1,192 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fraud Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body class="prediction-page">
 {% extends 'base.html' %}
 
-{% block title %}Prediction - Fraud Detection{% endblock %}
+{% block title %}Prediction - PureBank CCFD{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h1>Fraud Prediction</h1>
+<div class="prediction-page">
+    <h1 class="page-title">Fraud Prediction</h1>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                <ul class="flash-messages">
-                    {% for category, message in messages %}
-                        <li class="flash-message {{ category }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        {% endwith %}
+    <!-- Result Card (shown after prediction) -->
+    {% if result %}
+    <div class="result-card {{ 'result-fraud' if result == 'Fraud' else 'result-safe' }}">
+        <div class="result-header">
+            <h2>Prediction Result</h2>
+            <span class="risk-badge {{ 'badge-danger' if result == 'Fraud' else 'badge-success' }}">
+                {{ result }}
+            </span>
+        </div>
 
-        {% if result %}
-            <div class="prediction-result">
-                <h2>Prediction Result: <span class="{{ 'fraud' if result == 'Fraud' else 'not-fraud' }}">{{ result }}</span></h2>
-                <p><strong>Fraud Probability:</strong> {{ probability }}%</p>
+        <div class="result-body">
+            <!-- Gauge SVG -->
+            <div class="gauge-wrap">
+                <svg id="fraud-gauge" class="fraud-gauge" viewBox="0 0 120 120" data-probability="{{ probability }}">
+                    <circle class="gauge-bg" cx="60" cy="60" r="54" fill="none" stroke-width="10"/>
+                    <circle class="gauge-fill" cx="60" cy="60" r="54" fill="none" stroke-width="10"
+                        stroke-dasharray="339.29" stroke-dashoffset="339.29"
+                        stroke-linecap="round" transform="rotate(-90 60 60)"/>
+                    <text x="60" y="55" text-anchor="middle" class="gauge-text">{{ probability }}%</text>
+                    <text x="60" y="72" text-anchor="middle" class="gauge-label">Fraud Probability</text>
+                </svg>
+                <div class="risk-level">
+                    {% if probability > 75 %}
+                    <span class="risk-dot risk-high"></span> High Risk
+                    {% elif probability > 40 %}
+                    <span class="risk-dot risk-medium"></span> Medium Risk
+                    {% else %}
+                    <span class="risk-dot risk-low"></span> Low Risk
+                    {% endif %}
+                </div>
             </div>
-        {% else %}
-            <p>Awaiting prediction result...</p>
-        {% endif %}
 
-        <form action="{{ url_for('predict') }}" method="POST">
-            <label for="transaction_type">Transaction Type:</label>
-            <input type="text" id="transaction_type" name="transaction_type" required><br><br>
-
-            <label for="currency_code">Currency Code:</label>
-            <input type="text" id="currency_code" name="currency_code" required><br><br>
-
-            <label for="transaction_country">Transaction Country:</label>
-            <input type="text" id="transaction_country" name="transaction_country" required><br><br>
-
-            <label for="transaction_city">Transaction City:</label>
-            <input type="text" id="transaction_city" name="transaction_city" required><br><br>
-
-            <label for="transaction_amount">Transaction Amount:</label>
-            <input type="number" id="transaction_amount" name="transaction_amount" step="0.01" required><br><br>
-
-            <label for="credit_limit">Credit Limit:</label>
-            <input type="number" id="credit_limit" name="credit_limit" required><br><br>
-
-            <label for="merchant_category_code">Merchant Category Code:</label>
-            <input type="number" id="merchant_category_code" name="merchant_category_code" required><br><br>
-
-            <label for="open_to_buy">Open to Buy:</label>
-            <input type="number" id="open_to_buy" name="open_to_buy" required><br><br>
-
-            <input type="submit" value="Predict">
-        </form>
+            <!-- Waterfall Chart (feature importance placeholder) -->
+            <div class="waterfall-chart">
+                <h3>Feature Impact</h3>
+                <div class="waterfall-bars">
+                    <div class="wf-bar">
+                        <span class="wf-label">Transaction Amount</span>
+                        <div class="wf-track"><div class="wf-fill wf-high" style="width:80%"></div></div>
+                    </div>
+                    <div class="wf-bar">
+                        <span class="wf-label">Open to Buy</span>
+                        <div class="wf-track"><div class="wf-fill wf-medium" style="width:60%"></div></div>
+                    </div>
+                    <div class="wf-bar">
+                        <span class="wf-label">Credit Limit</span>
+                        <div class="wf-track"><div class="wf-fill wf-medium" style="width:55%"></div></div>
+                    </div>
+                    <div class="wf-bar">
+                        <span class="wf-label">Transaction City</span>
+                        <div class="wf-track"><div class="wf-fill wf-low" style="width:35%"></div></div>
+                    </div>
+                    <div class="wf-bar">
+                        <span class="wf-label">Merchant Code</span>
+                        <div class="wf-track"><div class="wf-fill wf-low" style="width:25%"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    {%endblock%}
-    <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('nav-links');
-        
-            if (navLinks.style.maxHeight && navLinks.style.maxHeight !== "0px") {
-                navLinks.style.maxHeight = "0px"; // Slide up
-            } else {
-                navLinks.style.maxHeight = navLinks.scrollHeight + "px"; // Slide down
-            }
-        }
-    </script>
-</body>
-</html>
+    {% endif %}
+
+    <!-- Auto-fill Buttons -->
+    <div class="autofill-actions">
+        <button type="button" class="btn btn-outline btn-sm" onclick="autoFillFraud()">Auto-fill Fraud Sample</button>
+        <button type="button" class="btn btn-outline btn-sm" onclick="autoFillLegit()">Auto-fill Legit Sample</button>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicators">
+        <div class="step-indicator active" data-step="0">
+            <span class="step-num">1</span>
+            <span class="step-label">Transaction</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-indicator" data-step="1">
+            <span class="step-num">2</span>
+            <span class="step-label">Financial</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-indicator" data-step="2">
+            <span class="step-num">3</span>
+            <span class="step-label">Review</span>
+        </div>
+    </div>
+
+    <!-- Wizard Form -->
+    <form action="{{ url_for('predict') }}" method="POST" id="predict-form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <!-- Step 1: Transaction Details -->
+        <div class="wizard-step active" data-step="0">
+            <h3>Transaction Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="transaction_type">Transaction Type</label>
+                    <input type="text" id="transaction_type" name="transaction_type" placeholder="e.g. Online Payment" required>
+                </div>
+                <div class="form-group">
+                    <label for="currency_code">Currency Code</label>
+                    <input type="text" id="currency_code" name="currency_code" placeholder="e.g. INR" required>
+                </div>
+                <div class="form-group">
+                    <label for="transaction_country">Transaction Country</label>
+                    <input type="text" id="transaction_country" name="transaction_country" placeholder="e.g. IN" required>
+                </div>
+                <div class="form-group">
+                    <label for="transaction_city">Transaction City</label>
+                    <input type="text" id="transaction_city" name="transaction_city" placeholder="e.g. Chennai" required>
+                </div>
+            </div>
+            <div class="wizard-actions">
+                <span></span>
+                <button type="button" class="btn btn-primary" onclick="nextStep()">Next Step</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Financial Details -->
+        <div class="wizard-step" data-step="1">
+            <h3>Financial Details</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="transaction_amount">Transaction Amount</label>
+                    <input type="number" id="transaction_amount" name="transaction_amount" step="0.01" min="0.01" placeholder="e.g. 5000" required>
+                </div>
+                <div class="form-group">
+                    <label for="credit_limit">Credit Limit</label>
+                    <input type="number" id="credit_limit" name="credit_limit" step="0.01" min="0.01" placeholder="e.g. 100000" required>
+                </div>
+                <div class="form-group">
+                    <label for="merchant_category_code">Merchant Category Code</label>
+                    <input type="number" id="merchant_category_code" name="merchant_category_code" placeholder="e.g. 5316" required>
+                </div>
+                <div class="form-group">
+                    <label for="open_to_buy">Open to Buy</label>
+                    <input type="number" id="open_to_buy" name="open_to_buy" step="0.01" min="0" placeholder="e.g. 75000" required>
+                </div>
+            </div>
+            <div class="wizard-actions">
+                <button type="button" class="btn btn-outline" onclick="prevStep()">Previous</button>
+                <button type="button" class="btn btn-primary" onclick="nextStep()">Next Step</button>
+            </div>
+        </div>
+
+        <!-- Step 3: Review & Submit -->
+        <div class="wizard-step" data-step="2">
+            <h3>Review & Submit</h3>
+            <div class="review-grid" id="reviewGrid">
+                <div class="review-item"><span class="review-label">Transaction Type</span><span class="review-value" id="rev-type">--</span></div>
+                <div class="review-item"><span class="review-label">Currency</span><span class="review-value" id="rev-currency">--</span></div>
+                <div class="review-item"><span class="review-label">Country</span><span class="review-value" id="rev-country">--</span></div>
+                <div class="review-item"><span class="review-label">City</span><span class="review-value" id="rev-city">--</span></div>
+                <div class="review-item"><span class="review-label">Amount</span><span class="review-value" id="rev-amount">--</span></div>
+                <div class="review-item"><span class="review-label">Credit Limit</span><span class="review-value" id="rev-limit">--</span></div>
+                <div class="review-item"><span class="review-label">Merchant Code</span><span class="review-value" id="rev-merchant">--</span></div>
+                <div class="review-item"><span class="review-label">Open to Buy</span><span class="review-value" id="rev-otb">--</span></div>
+            </div>
+            <div class="wizard-actions">
+                <button type="button" class="btn btn-outline" onclick="prevStep()">Previous</button>
+                <button type="submit" class="btn btn-primary btn-full">Predict Fraud</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Prediction History -->
+    <div class="prediction-history">
+        <h3>Prediction History</h3>
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>City</th>
+                    <th>Amount</th>
+                    <th>Result</th>
+                    <th>Probability</th>
+                </tr>
+            </thead>
+            <tbody id="historyBody">
+                <tr class="empty-row"><td colspan="5">No predictions yet. Submit a transaction above.</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

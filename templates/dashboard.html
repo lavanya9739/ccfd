@@ -1,0 +1,208 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - PureBank CCFD{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="dashboard">
+    <div class="dash-header">
+        <div>
+            <h1>{{ greeting }}, {{ session.get('user', 'User') }}</h1>
+            <p class="dash-subtitle">Here's your fraud detection overview</p>
+        </div>
+    </div>
+
+    <!-- KPI Cards with animated counters -->
+    <div class="kpi-grid">
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+            </div>
+            <h3>Total Transactions</h3>
+            <span class="kpi-value" data-count="{{ total }}">0</span>
+        </div>
+        <div class="kpi-card kpi-danger">
+            <div class="kpi-icon kpi-icon-red">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3>Fraudulent</h3>
+            <span class="kpi-value" data-count="{{ fraud }}">0</span>
+        </div>
+        <div class="kpi-card kpi-success">
+            <div class="kpi-icon kpi-icon-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3>Legitimate</h3>
+            <span class="kpi-value" data-count="{{ not_fraud }}">0</span>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-icon kpi-icon-purple">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            </div>
+            <h3>Fraud Rate</h3>
+            <span class="kpi-value" data-count="{{ fraud_rate }}" data-suffix="%">0%</span>
+        </div>
+        <div class="kpi-card kpi-danger">
+            <div class="kpi-icon kpi-icon-red">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3>Avg Fraud Amount</h3>
+            <span class="kpi-value kpi-small" data-count="{{ avg_fraud }}" data-prefix="&#8377;">0</span>
+        </div>
+        <div class="kpi-card kpi-success">
+            <div class="kpi-icon kpi-icon-green">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3>Avg Legit Amount</h3>
+            <span class="kpi-value kpi-small" data-count="{{ avg_legit }}" data-prefix="&#8377;">0</span>
+        </div>
+    </div>
+
+    <!-- Charts Row 1 -->
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>Fraud vs Legitimate</h3>
+            <canvas id="pieChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Fraud by City</h3>
+            <canvas id="cityChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Leaflet Map -->
+    <div class="chart-card map-card">
+        <h3>Geographic Fraud Heatmap</h3>
+        <div id="fraud-map" style="height:400px; border-radius:8px;"></div>
+    </div>
+
+    <!-- Charts Row 2 -->
+    <div class="chart-grid">
+        <div class="chart-card">
+            <h3>Fraud by Transaction Type</h3>
+            <canvas id="typeChart"></canvas>
+        </div>
+        <div class="chart-card">
+            <h3>Amount Distribution</h3>
+            <canvas id="amountChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Monthly Trend - Full Width -->
+    <div class="chart-card">
+        <h3>Monthly Fraud Trend</h3>
+        <canvas id="trendChart"></canvas>
+    </div>
+
+    <!-- Recent Fraud Alerts -->
+    <div class="chart-card">
+        <h3>Recent Fraud Alerts</h3>
+        <div class="alerts-table-wrap">
+            <table class="alerts-table">
+                <thead>
+                    <tr><th>Account</th><th>City</th><th>Amount</th><th>Date</th></tr>
+                </thead>
+                <tbody>
+                    {% for f in recent_frauds %}
+                    <tr>
+                        <td>****{{ (f['Account_Number']|string)[-4:] }}</td>
+                        <td>{{ f['Transaction_City'] }}</td>
+                        <td>&#8377;{{ f['Transaction_Amount']|round(2) }}</td>
+                        <td>{{ f['Transaction_Date'] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const colors = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#06b6d4'];
+
+    // Pie Chart
+    new Chart(document.getElementById('pieChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Fraud', 'Legitimate'],
+            datasets: [{ data: [{{ fraud }}, {{ not_fraud }}], backgroundColor: ['#ef4444','#10b981'], borderWidth: 0 }]
+        },
+        options: { responsive: true, cutout: '65%', plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // City Bar Chart
+    new Chart(document.getElementById('cityChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ city_labels|tojson }},
+            datasets: [{ label: 'Fraud Count', data: {{ city_counts|tojson }}, backgroundColor: colors, borderRadius: 6 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Type Bar Chart
+    new Chart(document.getElementById('typeChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ type_labels|tojson }},
+            datasets: [{ label: 'Fraud Count', data: {{ type_counts|tojson }}, backgroundColor: ['#f59e0b','#3b82f6','#8b5cf6','#10b981'], borderRadius: 6 }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Amount Distribution
+    new Chart(document.getElementById('amountChart'), {
+        type: 'bar',
+        data: {
+            labels: {{ amount_labels|tojson }},
+            datasets: [
+                { label: 'Fraud', data: {{ amount_fraud|tojson }}, backgroundColor: '#ef4444', borderRadius: 6 },
+                { label: 'Legit', data: {{ amount_legit|tojson }}, backgroundColor: '#10b981', borderRadius: 6 }
+            ]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Monthly Trend
+    new Chart(document.getElementById('trendChart'), {
+        type: 'line',
+        data: {
+            labels: {{ month_labels|tojson }},
+            datasets: [
+                { label: 'Fraud', data: {{ month_fraud|tojson }}, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,0.1)', fill: true, tension: 0.4, pointRadius: 4 },
+                { label: 'Total', data: {{ month_total|tojson }}, borderColor: '#3b82f6', backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, pointRadius: 4 }
+            ]
+        },
+        options: { responsive: true, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } }, x: { grid: { display: false } } } }
+    });
+
+    // Leaflet Map
+    const map = L.map('fraud-map').setView([20.5937, 78.9629], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+
+    const cityData = {{ city_fraud_map|tojson }};
+    const maxCount = Math.max(...cityData.map(c => c.count), 1);
+    cityData.forEach(city => {
+        const radius = 10 + (city.count / maxCount) * 30;
+        L.circleMarker([city.lat, city.lng], {
+            radius: radius,
+            fillColor: '#ef4444',
+            color: '#b91c1c',
+            weight: 2,
+            opacity: 0.8,
+            fillOpacity: 0.5,
+        })
+        .bindPopup(`<strong>${city.name}</strong><br>Fraud Cases: ${city.count}`)
+        .addTo(map);
+    });
+</script>
+{% endblock %}

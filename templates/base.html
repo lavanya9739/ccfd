@@ -1,96 +1,116 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Fraud Detection{% endblock %}</title>
+    <title>{% block title %}PureBank CCFD{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!--<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <header class="navbar">
-        <div class="navbar-container">
-            <a href="{{ url_for('index') }}" class="logo">Fraud Detection</a>
-            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation menu">☰</button>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="{{ url_for('index') }}">Home</a></li>
-                <li><a href="{{ url_for('about') }}">About</a></li>
-                <li><a href="{{ url_for('dataset') }}">Dataset</a></li>
-                <li><a href="{{ url_for('predict') }}">Prediction</a></li>
-          
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
 
-                <li class="ctn"><a href="#"></a></li>
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="{{ url_for('index') }}" class="nav-brand">
+                <img src="{{ url_for('static', filename='Purebank.jpg') }}" alt="PureBank" class="brand-logo">
+                <span>PureBank <strong>CCFD</strong></span>
+            </a>
+
+            <ul class="nav-links" id="navLinks">
+                <li><a href="{{ url_for('index') }}" class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Home</a></li>
+                <li><a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                <li><a href="{{ url_for('predict') }}" class="nav-link {% if request.endpoint == 'predict' %}active{% endif %}">Prediction</a></li>
+                <li><a href="{{ url_for('dataset') }}" class="nav-link {% if request.endpoint == 'dataset' %}active{% endif %}">Dataset</a></li>
+                <li><a href="{{ url_for('about') }}" class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">About</a></li>
+                <li><a href="{{ url_for('contact') }}" class="nav-link {% if request.endpoint == 'contact' %}active{% endif %}">Contact</a></li>
             </ul>
-        </div>
-        <div class="auth-buttons">
-            {% if session.get('user') %}
-                <a href="{{ url_for('logout') }}" class="btn">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}" class="btn">Login</a>
-                <a href="{{ url_for('signup') }}" class="btn">Sign Up</a>
-            {% endif %}
-        </div>
-    </header>
 
-    <main>
-        {% block content %}
-        {% endblock %}
+            <div class="nav-actions">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                    <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </button>
+
+                <button class="notif-bell" id="notifBell" aria-label="Notifications">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+                    <span class="notif-badge" id="notifBadge" style="display:none;">0</span>
+                </button>
+                <div class="notif-dropdown" id="notifDropdown"></div>
+
+                {% if session.get('user') %}
+                <div class="user-avatar" title="{{ session['user'] }}">
+                    {{ session['user'][0]|upper }}
+                </div>
+                <a href="{{ url_for('logout') }}" class="btn btn-outline btn-sm">Logout</a>
+                {% endif %}
+            </div>
+
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="toast toast-{{ category }}" data-auto-dismiss="4000">
+                    <span class="toast-msg">{{ message }}</span>
+                    <button class="toast-close">&times;</button>
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
-        <table style="width: 100%; text-align: left; border-spacing: 10px;">
-            <thead >
-                <tr>
-                    <th>Team Members</th>
-                    <th>USN</th>
-                    <th>Machine Learning technologies used</th>
-                    <th>Technologies Used</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Aishwarya MK</td>
-                    <td>1BH21CS006</td>
-                    <td>LightGBM</td>
-                    <td>Python</td>
-
-                </tr>
-                <tr>
-                    <td>Indhu V</td>
-                    <td>1BH21CS037</td>
-                    <td>scikit-learn</td>
-                    <td>HTML</td>
-                </tr>
-                <tr>
-                    <td>Lavanya R</td>
-                    <td>1BH21CS056</td>
-                    <td>Joblib</td>
-                    <td>CSS</td>
-                </tr>
-                <tr>
-                    <td>Pooja K</td>
-                    <td>1BH21CS077</td>
-                    <td>Label Encoding</td>
-                    <td>JavaScript</td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>Standard Scaler</td>
-                    <td>SQL</td>
-                </tr>
-            </tbody>
-        </table>
-        <p>&copy; 2024 Fraud Detection Platform. All rights reserved.</p>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>PureBank CCFD</h4>
+                <p>AI-powered credit card fraud detection system protecting your transactions in real time.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+                    <li><a href="{{ url_for('predict') }}">Prediction</a></li>
+                    <li><a href="{{ url_for('dataset') }}">Dataset</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="{{ url_for('about') }}">About the Model</a></li>
+                    <li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Contact</h4>
+                <p>support@purebank.in</p>
+                <p>+91 1800-XXX-XXXX</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 PureBank CCFD. All rights reserved.</p>
+        </div>
     </footer>
 
-    <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('nav-links');
-            navLinks.style.maxHeight = navLinks.style.maxHeight && navLinks.style.maxHeight !== "0px"
-                ? "0px"
-                : navLinks.scrollHeight + "px";
-        }
-    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

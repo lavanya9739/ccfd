@@ -1,193 +1,212 @@
 {% extends 'base.html' %}
 
-    {% block title %}About Us - Fraud Detection{% endblock %}
-    
-    {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About Us</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body class="about-page">
-    
+{% block title %}About - PureBank CCFD{% endblock %}
 
-    <!-- About Us Section -->
-    <section id="about-us" class="about-us-section">
-        <h1>About the Project</h1>
-        <p>This project focuses on developing a robust solution for credit card fraud detection using the Light Gradient Boosting Algorithm (LightGBM). The model analyzes transaction data to identify fraudulent activities by leveraging features such as transaction amount, time, location, and merchant details. By employing LightGBM, the solution ensures high accuracy, efficiency, and scalability, making it suitable for handling large datasets typical of financial transactions. Built with Flask for lightweight and fast API deployment, the project provides a reliable framework for combating credit card fraud.</p>
-       
-    </section>
-    
-    <!-- History of LightGBM Algorithm Section -->
-    <section id="history-lgbm" class="about-us-section">
-        <h1>History of LightGBM Algorithm</h1>
-        <p>LightGBM, short for Light Gradient Boosting Machine, is a breakthrough tree-based ensemble learning approach developed by researchers at Microsoft and Peking University. It was designed to overcome the efficiency and scalability challenges of XGBoost when handling high-dimensional input features and massive datasets.</p>
-        <p>The LightGBM technique comprises two main innovations:</p>
-        <ul>
-            <li><strong>Exclusive Feature Bundling (EFB):</strong> Groups mutually exclusive features to reduce dimensionality without losing information.</li>
-            <li><strong>Gradient-Based One-Side Sampling (GOSS):</strong> Focuses on instances with larger gradients, ensuring faster and more accurate learning.</li>
-        </ul>
-        <p>This algorithm is based on a histogram and leaf-splitting method, which provides high speed and lower computational costs compared to other algorithms. The histogram approach reduces computation by leveraging discrete bin values to define the best split points instead of sorting all continuous feature values.</p>
-        <p>Discrete bin values are also used for regularization, improving the generalizability of the model. To further enhance accuracy, leaf-splitting optimization algorithms can be applied to reduce training time. Other techniques like one-way gradient-based sampling and classification of proprietary features significantly improve the model's execution speed.</p>
+{% block content %}
+<div class="about-page">
+    <!-- Hero -->
+    <section class="about-hero">
+        <div class="about-hero-content">
+            <h1>About the Project</h1>
+            <p>AI-powered credit card fraud detection using LightGBM, built with Flask for fast and reliable deployment.</p>
+        </div>
     </section>
 
-    <section id="lightgbm-advantages" class="about-us-section">
-        <h1>Why LightGBM Stands Out</h1>
-        <div class="advantages-container">
-        <!-- Advantage 1 -->
-        <div class="advantage-box">
-            <h2>1. Speed and Efficiency</h2>
-            
-                <p>Histogram-based learning: LightGBM uses a histogram-based approach where continuous values are bucketed into discrete bins, making it faster than traditional gradient boosting algorithms.</p>
-                
-            
-        </div>
-    
-        <!-- Advantage 2 -->
-        <div class="advantage-box">
-            <h2>2. Memory Usage</h2>
-            <p>LightGBM is highly memory-efficient due to its histogram-based approach and data compression techniques, making it more efficient than other gradient boosting implementations like XGBoost.</p>
-        </div>
-    
-        <!-- Advantage 3 -->
-        <div class="advantage-box">
-            <h2>3. Handling Large Datasets</h2>
-            <p>LightGBM scales well with large datasets in terms of both training speed and memory usage, making it especially useful for large-scale problems.</p>
-        </div>
-    
-        <!-- Advantage 4 -->
-        <div class="advantage-box">
-            <h2>4. Support for Categorical Features</h2>
-            <p>LightGBM can handle categorical features natively, saving both computation time and memory by eliminating the need for one-hot encoding.</p>
-        </div>
-    
-        <!-- Advantage 5 -->
-        <div class="advantage-box">
-            <h2>5. Distributed Learning</h2>
-            <p>LightGBM supports parallel and distributed learning, allowing it to efficiently handle massive datasets by splitting computations across multiple machines or cores.</p>
-        </div>
-    
-         <!-- Data Preprocessing Steps Section -->
-         <section id="algorithm-steps" class="about-us-section">
-            <h1>Data Preprocessing, Feature Engineering, Model Training, and Prediction</h1>
-    
-            <!-- Data Preprocessing -->
-            <div class="step">
-                <h2>Data Preprocessing</h2>
-                <p>Before feeding the data into a machine learning model like LightGBM, we need to preprocess the data. Here's how each feature is processed:</p>
-                <ul>
-                    <li><strong>Transaction Type (Categorical Feature):</strong> Encoded as a binary variable (e.g., Online Payment → 1, Refund → 0).</li>
-                    <li><strong>Currency Code (Categorical Feature):</strong> Encoded into numerical values (e.g., INR → 0).</li>
-                    <li><strong>Transaction Country (Categorical Feature):</strong> Encoded as integers (e.g., IN → 0, US → 1).</li>
-                    <li><strong>Transaction City (Categorical Feature):</strong> Encoded as integers (e.g., Chennai → 0, Hyderabad → 1).</li>
-                    <li><strong>Transaction Amount (Numerical Feature):</strong> Continuous numerical value used directly.</li>
-                    <li><strong>Credit Limit (Numerical Feature):</strong> Continuous variable used directly.</li>
-                    <li><strong>Merchant Category Code (Categorical Feature):</strong> Encoded as an integer.</li>
-                    <li><strong>Open to Buy (Numerical Feature):</strong> Continuous variable used directly.</li>
-                </ul>No code was selected, so I will provide a general improvement to the code. Here's an improved version of the HTML structure with added accessibility features and semantic elements:
+    <!-- Tabbed Navigation -->
+    <div class="about-tabs-nav">
+        <button class="about-tab-btn active" data-tab="tab-history">History</button>
+        <button class="about-tab-btn" data-tab="tab-advantages">Advantages</button>
+        <button class="about-tab-btn" data-tab="tab-preprocessing">Preprocessing</button>
+        <button class="about-tab-btn" data-tab="tab-training">Training</button>
+        <button class="about-tab-btn" data-tab="tab-prediction">Prediction</button>
+    </div>
 
-    
-    
-            <!-- Feature Engineering -->
-            <div class="step">
-                <h2>Feature Engineering</h2>
-                <p>Once the data is encoded, the final set of features looks like this:</p>
-                <table>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Example Values</th>
-                    </tr>
-                    <tr>
-                        <td>Transaction Type (Encoded)</td>
-                        <td>1 (Online Payment)</td>
-                    </tr>
-                    <tr>
-                        <td>Currency Code (Encoded)</td>
-                        <td>0 (INR)</td>
-                    </tr>
-                    <tr>
-                        <td>Transaction Country (Encoded)</td>
-                        <td>0 (IN)</td>
-                    </tr>
-                    <tr>
-                        <td>Transaction City (Encoded)</td>
-                        <td>0 (Chennai)</td>
-                    </tr>
-                    <tr>
-                        <td>Transaction Amount</td>
-                        <td>74565.9</td>
-                    </tr>
-                    <tr>
-                        <td>Credit Limit</td>
-                        <td>6882.57</td>
-                    </tr>
-                    <tr>
-                        <td>Merchant Category Code</td>
-                        <td>5316</td>
-                    </tr>
-                    <tr>
-                        <td>Open to Buy</td>
-                        <td>5316</td>
-                    </tr>
-                </table>
+    <!-- Tab Panels -->
+    <div class="about-tabs-content">
+
+        <!-- History Panel -->
+        <div class="about-tab-panel active" id="tab-history">
+            <h2>History of LightGBM</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Origins</h3>
+                        <p>LightGBM (Light Gradient Boosting Machine) was developed by researchers at Microsoft and Peking University to overcome the efficiency and scalability challenges of XGBoost when handling high-dimensional input features and massive datasets.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Key Innovation: GOSS</h3>
+                        <p>Gradient-Based One-Side Sampling (GOSS) focuses on instances with larger gradients, ensuring faster and more accurate learning while retaining data with large gradients and randomly sampling from data with small gradients.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Key Innovation: EFB</h3>
+                        <p>Exclusive Feature Bundling (EFB) groups mutually exclusive features to reduce dimensionality without losing information, dramatically reducing computation time.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Histogram-Based Approach</h3>
+                        <p>Uses discrete bin values to define the best split points instead of sorting all continuous feature values, providing high speed and lower computational costs compared to other algorithms.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <h3>Leaf-Wise Growth</h3>
+                        <p>Unlike level-wise growth in XGBoost, LightGBM grows trees leaf-wise, choosing the leaf with the maximum delta loss to grow, resulting in lower loss and higher accuracy.</p>
+                    </div>
+                </div>
             </div>
-    
-            <!-- Model Training -->
-            <div class="step">
-                <h2>Model Training with LightGBM</h2>
-                <p>LightGBM is an ensemble method that builds a series of decision trees to make better predictions by minimizing the error of previous trees.</p>
-                <p>The prediction formula in LightGBM is:</p>
-                <p>𝑦 = ∑𝑚=1𝑀𝛼𝑚𝑇𝑚(𝑥)</p>
-                <p>Where:</p>
-                <ul>
-                    <li>𝑦 = the predicted label (fraud or not fraud)</li>
-                    <li>𝑀 = the total number of trees</li>
-                    <li>𝛼𝑚 = the weight (importance) of each tree</li>
-                    <li>𝑇𝑚(𝑥) = the m-th decision tree making predictions based on the input features (e.g., Transaction Amount, Credit Limit, etc.)</li>
-                </ul>
+        </div>
+
+        <!-- Advantages Panel -->
+        <div class="about-tab-panel" id="tab-advantages">
+            <h2>Why LightGBM Stands Out</h2>
+            <div class="advantages-grid">
+                <div class="advantage-box">
+                    <div class="adv-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <h3>Speed & Efficiency</h3>
+                    <p>Histogram-based learning where continuous values are bucketed into discrete bins, making it faster than traditional gradient boosting algorithms.</p>
+                </div>
+                <div class="advantage-box">
+                    <div class="adv-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
+                    </div>
+                    <h3>Memory Efficient</h3>
+                    <p>Highly memory-efficient due to its histogram-based approach and data compression techniques, more efficient than XGBoost.</p>
+                </div>
+                <div class="advantage-box">
+                    <div class="adv-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+                    </div>
+                    <h3>Large Datasets</h3>
+                    <p>Scales well with large datasets in both training speed and memory usage, making it ideal for large-scale financial problems.</p>
+                </div>
+                <div class="advantage-box">
+                    <div class="adv-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3"/><path d="M9 20h6"/><path d="M12 4v16"/></svg>
+                    </div>
+                    <h3>Categorical Features</h3>
+                    <p>Handles categorical features natively, saving computation time and memory by eliminating the need for one-hot encoding.</p>
+                </div>
+                <div class="advantage-box">
+                    <div class="adv-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                    </div>
+                    <h3>Distributed Learning</h3>
+                    <p>Supports parallel and distributed learning, efficiently handling massive datasets by splitting computations across multiple machines.</p>
+                </div>
             </div>
-    
-            <!-- Boosting and Gradient Calculation -->
-            <div class="step">
-                <h2>Boosting and Gradient Calculation</h2>
-                <p>The goal of gradient boosting is to minimize the loss function iteratively, with each tree added to reduce errors. LightGBM uses binary cross-entropy as its loss function:</p>
-                <p>𝐿(𝑦,𝑝) = −[𝑦log(𝑝) + (1−𝑦)log(1−𝑝)]</p>
-                <p>Where:</p>
-                <ul>
-                    <li>𝐿 = loss (error)</li>
-                    <li>𝑦 = true label (0 for not fraud, 1 for fraud)</li>
-                    <li>𝑝 = predicted probability (between 0 and 1)</li>
-                </ul>
+        </div>
+
+        <!-- Preprocessing Panel -->
+        <div class="about-tab-panel" id="tab-preprocessing">
+            <h2>Data Preprocessing & Feature Engineering</h2>
+            <div class="preprocessing-steps">
+                <div class="step-card">
+                    <span class="step-number">1</span>
+                    <h3>Categorical Encoding</h3>
+                    <p>Transaction Type, Currency Code, Transaction Country, and Transaction City are encoded into numerical values using Label Encoding. For example: Online Payment becomes 1, INR becomes 0, IN becomes 0, Chennai becomes 0.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">2</span>
+                    <h3>Numerical Features</h3>
+                    <p>Transaction Amount, Credit Limit, Merchant Category Code, and Open to Buy are continuous numerical values used directly as features in the model.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">3</span>
+                    <h3>Feature Scaling</h3>
+                    <p>Standard Scaler is applied to normalize all features to have zero mean and unit variance, ensuring that no feature dominates due to its scale.</p>
+                </div>
+                <div class="step-card">
+                    <span class="step-number">4</span>
+                    <h3>Feature Alignment</h3>
+                    <p>Columns are aligned with the training data to ensure that the model receives features in the exact order and format it was trained on.</p>
+                </div>
             </div>
-    
-            <!-- Prediction and Decision Threshold -->
-            <div class="step">
-                <h2>Prediction and Decision Threshold</h2>
-                <p>After training, the model predicts a probability score between 0 and 1 for fraud detection. The decision rule is:</p>
-                <ul>
-                    <li>If the probability score is greater than 0.5, classify the transaction as fraud.</li>
-                    <li>If the probability score is less than or equal to 0.5, classify the transaction as not fraud.</li>
-                </ul>
-                <p>For example, if the model predicts a probability of 0.72 for fraud, it classifies the transaction as fraud.</p>
+        </div>
+
+        <!-- Training Panel -->
+        <div class="about-tab-panel" id="tab-training">
+            <h2>Model Training with LightGBM</h2>
+            <div class="training-content">
+                <div class="formula-card">
+                    <h3>Prediction Formula</h3>
+                    <div class="formula">
+                        <code>y = Sum(m=1 to M) of alpha_m * T_m(x)</code>
+                    </div>
+                    <ul class="formula-legend">
+                        <li><strong>y</strong> = predicted label (fraud or not fraud)</li>
+                        <li><strong>M</strong> = total number of trees</li>
+                        <li><strong>alpha_m</strong> = weight (importance) of each tree</li>
+                        <li><strong>T_m(x)</strong> = the m-th decision tree making predictions based on input features</li>
+                    </ul>
+                </div>
+
+                <div class="formula-card">
+                    <h3>Loss Function (Binary Cross-Entropy)</h3>
+                    <div class="formula">
+                        <code>L(y, p) = -[y * log(p) + (1 - y) * log(1 - p)]</code>
+                    </div>
+                    <ul class="formula-legend">
+                        <li><strong>L</strong> = loss (error)</li>
+                        <li><strong>y</strong> = true label (0 for not fraud, 1 for fraud)</li>
+                        <li><strong>p</strong> = predicted probability (between 0 and 1)</li>
+                    </ul>
+                </div>
             </div>
-        </section>
-   
-   
-    <!-- Footer -->
-   {%endblock%}
-    <script>
-        function toggleMenu() {
-            const navLinks = document.getElementById('nav-links');
-        
-            if (navLinks.style.maxHeight && navLinks.style.maxHeight !== "0px") {
-                navLinks.style.maxHeight = "0px"; // Slide up
-            } else {
-                navLinks.style.maxHeight = navLinks.scrollHeight + "px"; // Slide down
-            }
-        }
-        </script>
-</body>
-</html>
+        </div>
+
+        <!-- Prediction Panel -->
+        <div class="about-tab-panel" id="tab-prediction">
+            <h2>Prediction & Decision Threshold</h2>
+            <div class="prediction-explain">
+                <p>After training, the model predicts a probability score between 0 and 1. The decision threshold determines the final classification:</p>
+
+                <div class="threshold-bar">
+                    <div class="threshold-track">
+                        <div class="threshold-safe" style="width:50%">
+                            <span>Not Fraud</span>
+                        </div>
+                        <div class="threshold-danger" style="width:50%">
+                            <span>Fraud</span>
+                        </div>
+                        <div class="threshold-marker" style="left:50%">
+                            <span class="threshold-label">0.5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="risk-dots-row">
+                    <div class="risk-dot-item">
+                        <span class="risk-dot risk-low"></span>
+                        <span>Low Risk (0 - 0.3)</span>
+                    </div>
+                    <div class="risk-dot-item">
+                        <span class="risk-dot risk-medium"></span>
+                        <span>Medium Risk (0.3 - 0.5)</span>
+                    </div>
+                    <div class="risk-dot-item">
+                        <span class="risk-dot risk-high"></span>
+                        <span>High Risk (0.5 - 1.0)</span>
+                    </div>
+                </div>
+
+                <div class="example-box">
+                    <h4>Example</h4>
+                    <p>If the model predicts a probability of <strong>0.72</strong> for fraud, since 0.72 > 0.5, the transaction is classified as <strong>Fraud</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
