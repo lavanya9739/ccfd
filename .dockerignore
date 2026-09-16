@@ -1,8 +1,0 @@
-__pycache__
-*.pyc
-.git
-.env
-.vscode
-.dist
-ccfd
-*.md
